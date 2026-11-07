@@ -807,11 +807,11 @@ main > *:nth-child(6) { animation-delay: .15s; }
   main > .disclaimer,
   main > .w2 { grid-column: 1 / -1; }
 
-  /* 表单类页签：单列居中，避免输入区被拉得过宽 */
+  /* 表单类页签：单列居中收窄，避免输入区与分段控件被拉得过宽 */
   main.tab-add,
   main.tab-sport,
   main.tab-me {
-    grid-template-columns: minmax(0, 800px);
+    grid-template-columns: minmax(0, 560px);
     justify-content: center;
   }
 
