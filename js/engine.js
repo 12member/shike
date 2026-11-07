@@ -1,7 +1,7 @@
 /* eslint-disable */
 /**
  * 自动生成，请勿手改。
- * 源文件：../shike-miniprogram/utils/*.js
+ * 源文件：engine/*.js
  * 重新生成：node build.js
  */
 (function (global) {
@@ -22,26 +22,22 @@
     return m.exports
   }
 
-  /* store.js 是照着小程序写的，这里把 localStorage 伪装成 wx 存储接口 */
+  /* 存储层：用 localStorage 实现 engine/store.js 需要的 storage 接口 */
   var LS = global.localStorage
-  var wxShim = {
-    getStorageSync: function (k) {
+  var storage = {
+    get: function (k) {
       try {
         var v = LS.getItem(k)
         return v === null ? '' : JSON.parse(v)
       } catch (e) { return '' }
     },
-    setStorageSync: function (k, v) {
+    set: function (k, v) {
       try { LS.setItem(k, JSON.stringify(v)) } catch (e) {}
     },
-    removeStorageSync: function (k) {
+    remove: function (k) {
       try { LS.removeItem(k) } catch (e) {}
     }
   }
-  global.wx = wxShim
-  // 模块体内直接写的是 wx.xxx，这里给它一个作用域内的同名变量，
-  // 这样不管跑在浏览器还是被当作脚本加载，都能解析到
-  var wx = wxShim
 
 __def("fooddb", function (module, exports, require) {
 /**
@@ -1414,13 +1410,14 @@ module.exports = { analyze, pickFoods }
 __def("store", function (module, exports, require) {
 /**
  * 本地数据层：档案 + 每日餐食记录
- * 全部落在 wx.setStorageSync，无网络也能用；后续要同步云端只改这一层即可。
+ * 全部落在浏览器 localStorage，无网络也能用；后续要同步云端只改这一层即可。
+ * storage 对象由打包脚本注入（get / set / remove 三个方法）。
  */
 
 const KEY_PROFILE = 'sk_profile_v1'
 const KEY_RECORDS = 'sk_records_v1'
 const KEY_EXERCISE = 'sk_exercise_v1'
-const KEEP_DAYS = 90 // 只保留最近 90 天，避免超出小程序 10MB 存储上限
+const KEEP_DAYS = 90 // 只保留最近 90 天，避免本地存储无限增长
 
 const MEAL_TYPES = [
   { key: 'breakfast', label: '早餐', hour: [5, 10] },
@@ -1476,7 +1473,7 @@ function guessMealType() {
 
 function getProfile() {
   try {
-    return wx.getStorageSync(KEY_PROFILE) || null
+    return storage.get(KEY_PROFILE) || null
   } catch (e) {
     return null
   }
@@ -1484,7 +1481,7 @@ function getProfile() {
 
 function saveProfile(p) {
   try {
-    wx.setStorageSync(KEY_PROFILE, p)
+    storage.set(KEY_PROFILE, p)
     return true
   } catch (e) {
     return false
@@ -1500,7 +1497,7 @@ function hasProfile() {
 
 function getAllRecords() {
   try {
-    return wx.getStorageSync(KEY_RECORDS) || {}
+    return storage.get(KEY_RECORDS) || {}
   } catch (e) {
     return {}
   }
@@ -1513,7 +1510,7 @@ function saveAllRecords(all) {
     delete all[keys.shift()]
   }
   try {
-    wx.setStorageSync(KEY_RECORDS, all)
+    storage.set(KEY_RECORDS, all)
     return true
   } catch (e) {
     console.error('写入记录失败', e)
@@ -1585,8 +1582,8 @@ function getKcalSeries(n) {
 
 function clearAll() {
   try {
-    wx.removeStorageSync(KEY_RECORDS)
-    wx.removeStorageSync(KEY_EXERCISE)
+    storage.remove(KEY_RECORDS)
+    storage.remove(KEY_EXERCISE)
     return true
   } catch (e) {
     return false
@@ -1596,7 +1593,7 @@ function clearAll() {
 /** 只删档案，保留记录 */
 function clearProfile() {
   try {
-    wx.removeStorageSync(KEY_PROFILE)
+    storage.remove(KEY_PROFILE)
     return true
   } catch (e) {
     return false
@@ -1607,7 +1604,7 @@ function clearProfile() {
 
 function getAllExercise() {
   try {
-    return wx.getStorageSync(KEY_EXERCISE) || {}
+    return storage.get(KEY_EXERCISE) || {}
   } catch (e) {
     return {}
   }
@@ -1619,7 +1616,7 @@ function saveAllExercise(all) {
     delete all[keys.shift()]
   }
   try {
-    wx.setStorageSync(KEY_EXERCISE, all)
+    storage.set(KEY_EXERCISE, all)
     return true
   } catch (e) {
     console.error('写入运动记录失败', e)

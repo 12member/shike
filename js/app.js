@@ -1,5 +1,5 @@
 /* 食刻 · 网页版
- * 计算全部复用 js/engine.js（由小程序 utils 打包而来），这里只做界面和交互。 */
+ * 计算全部复用 js/engine.js（由 engine/ 源码打包生成），这里只做界面和交互。 */
 
 (function () {
   'use strict'
@@ -114,7 +114,21 @@
           '<div class="date">' + (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + wk + '</div>' +
         '</div>' +
         '<div class="who" data-a="tab" data-t="me">' + esc(right) + ' ›</div>' +
-      '</div>'
+      '</div>' +
+      // 宽屏下的左侧导航，窄屏由 CSS 隐藏，改用底部 tabbar
+      '<aside class="side">' +
+        '<div class="side-brand">食刻<span>今天吃了什么</span></div>' +
+        '<div class="side-date">' + (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + wk + '</div>' +
+        '<nav class="side-nav">' +
+          TABS.map(function (t) {
+            return '<button class="snav ' + (S.tab === t.k ? 'on' : '') + '" data-a="tab" data-t="' + t.k + '">' +
+              '<span class="si">' + t.icon + '</span>' +
+              '<span>' + (t.center ? '记一餐' : t.label) + '</span>' +
+              '</button>'
+          }).join('') +
+        '</nav>' +
+        '<div class="side-who" data-a="tab" data-t="me">' + esc(right) + ' ›</div>' +
+      '</aside>'
   }
 
   /* ---------------- 首页 ---------------- */
@@ -586,7 +600,7 @@
 
     var html = ''
 
-    html += '<div class="card">' +
+    html += '<div class="card w2">' +
       '<div class="card-hd"><h2>最近 7 天</h2><span class="r">目标 ' + target + '</span></div>' +
       '<div class="chart">' + days.map(function (d) {
         var h = d.kcal > 0 ? Math.max(3, (d.kcal / max) * 74) : 0
@@ -658,6 +672,8 @@
   function render() {
     renderTop()
     renderTabbar()
+    // 宽屏按页签决定栅格：今日/历史双列，表单类页签单列居中
+    view.className = 'tab-' + S.tab
 
     // 进记餐页时，按时间猜一个餐次
     if (S.tab === 'add' && !S.started) {

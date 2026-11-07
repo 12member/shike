@@ -1,15 +1,15 @@
 /**
- * 把小程序的计算引擎原样打包成浏览器可用的 engine.js
+ * 把 engine/ 下的计算引擎源码打包成浏览器可直接加载的 js/engine.js
  *
- * 为什么这么做：营养计算、食物库、运动库、建议规则这些逻辑一份就够，
- * 小程序和网站应该共用，不要复制粘贴出两套会各自跑偏的代码。
+ * 营养计算、食物库、运动库、建议规则全部集中在 engine/ 里维护，
+ * 页面只引用打包产物，不要在 js/engine.js 上手改。
  *
  * 用法：node build.js
  */
 const fs = require('fs')
 const path = require('path')
 
-const SRC = path.join(__dirname, '..', 'shike-miniprogram', 'utils')
+const SRC = path.join(__dirname, 'engine')
 const MODS = ['fooddb', 'textparse', 'sportdb', 'calc', 'advice', 'store']
 
 let body = ''
@@ -22,7 +22,7 @@ for (const name of MODS) {
 const head = `/* eslint-disable */
 /**
  * 自动生成，请勿手改。
- * 源文件：../shike-miniprogram/utils/*.js
+ * 源文件：engine/*.js
  * 重新生成：node build.js
  */
 (function (global) {
@@ -43,26 +43,22 @@ const head = `/* eslint-disable */
     return m.exports
   }
 
-  /* store.js 是照着小程序写的，这里把 localStorage 伪装成 wx 存储接口 */
+  /* 存储层：用 localStorage 实现 engine/store.js 需要的 storage 接口 */
   var LS = global.localStorage
-  var wxShim = {
-    getStorageSync: function (k) {
+  var storage = {
+    get: function (k) {
       try {
         var v = LS.getItem(k)
         return v === null ? '' : JSON.parse(v)
       } catch (e) { return '' }
     },
-    setStorageSync: function (k, v) {
+    set: function (k, v) {
       try { LS.setItem(k, JSON.stringify(v)) } catch (e) {}
     },
-    removeStorageSync: function (k) {
+    remove: function (k) {
       try { LS.removeItem(k) } catch (e) {}
     }
   }
-  global.wx = wxShim
-  // 模块体内直接写的是 wx.xxx，这里给它一个作用域内的同名变量，
-  // 这样不管跑在浏览器还是被当作脚本加载，都能解析到
-  var wx = wxShim
 
 `
 

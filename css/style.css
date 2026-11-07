@@ -1,5 +1,5 @@
 /* 食刻 · 网页版样式
-   设计原则：手机优先，桌面上居中成一张卡片；所有数字用等宽字形对齐 */
+   设计原则：响应式。窄屏单列 + 底部导航，桌面左侧导航 + 双列栅格；数字用等宽字形对齐 */
 
 :root {
   --bg: #F1F4F2;
@@ -696,4 +696,135 @@ main > *:nth-child(6) { animation-delay: .15s; }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
+}
+
+/* ============================================================
+   响应式布局
+   窄屏：底部 tabbar + 单列
+   平板：居中加宽
+   桌面（≥1024px）：左侧固定导航 + 双列内容栅格
+   ============================================================ */
+
+.side { display: none; }
+
+@media (min-width: 700px) and (max-width: 1023px) {
+  #app, #tabbar { max-width: 660px; }
+  .sheet { max-width: 660px; }
+  main { padding: 22px 22px 0; }
+}
+
+@media (min-width: 1024px) {
+  body { background: #E8EDEA; }
+
+  #app {
+    max-width: 1280px;
+    padding-bottom: 0;
+    display: grid;
+    grid-template-columns: 244px minmax(0, 1fr);
+    box-shadow: none;
+  }
+
+  .topbar { display: none; }
+  #tabbar { display: none; }
+
+  /* 左侧导航 */
+  .side {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 36px 22px 26px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+  }
+
+  .side-brand {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .side-brand span {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-top: 6px;
+  }
+
+  .side-date {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--muted);
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .side-nav { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; }
+
+  .snav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink2);
+    text-align: left;
+    transition: background .16s, color .16s;
+  }
+  .snav .si { font-size: 18px; width: 22px; text-align: center; color: var(--muted); }
+  .snav:hover { background: #F4F8F6; }
+  .snav.on { background: var(--brand-l); color: var(--brand-d); font-weight: 600; }
+  .snav.on .si { color: var(--brand); }
+
+  .side-who {
+    margin-top: auto;
+    font-size: 12.5px;
+    color: var(--muted);
+    padding: 12px 14px;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .side-who:hover { color: var(--brand-d); }
+
+  /* 内容区：双列栅格 */
+  main {
+    padding: 32px 34px 52px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    align-items: start;
+  }
+  main > * { margin-bottom: 0; }
+
+  main > .hero,
+  main > .banner,
+  main > .note,
+  main > .disclaimer,
+  main > .w2 { grid-column: 1 / -1; }
+
+  /* 表单类页签：单列居中，避免输入区被拉得过宽 */
+  main.tab-add,
+  main.tab-sport,
+  main.tab-me {
+    grid-template-columns: minmax(0, 800px);
+    justify-content: center;
+  }
+
+  /* 首页热量卡在宽屏下更舒展 */
+  main.tab-home > .hero { padding: 26px 26px 20px; }
+  main.tab-home .hero-big { font-size: 54px; }
+
+  /* 底部弹层在桌面上收成居中宽卡片 */
+  .sheet {
+    max-width: 640px;
+    border-radius: 22px;
+    margin-bottom: 32px;
+  }
+
+  #toast { bottom: 40px; }
 }
