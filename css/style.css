@@ -716,16 +716,26 @@ main > *:nth-child(6) { animation-delay: .15s; }
 @media (min-width: 1024px) {
   body { background: #E8EDEA; }
 
+  /* 桌面端整体字号放大，读起来更舒服 */
+  body { font-size: 16px; }
+
   #app {
     max-width: 1280px;
     padding-bottom: 0;
     display: grid;
-    grid-template-columns: 244px minmax(0, 1fr);
+    grid-template-columns: 248px minmax(0, 1fr);
     box-shadow: none;
   }
 
   .topbar { display: none; }
   #tabbar { display: none; }
+
+  /* 卡片更透气 */
+  .card { padding: 22px; margin-bottom: 16px; border-radius: 20px; }
+  .card-hd h2 { font-size: 16.5px; }
+  .card-hd .r { font-size: 13px; }
+  .tiny { font-size: 13px; }
+  .empty { font-size: 14px; }
 
   /* 左侧导航 */
   .side {
@@ -740,14 +750,14 @@ main > *:nth-child(6) { animation-delay: .15s; }
   }
 
   .side-brand {
-    font-size: 27px;
+    font-size: 29px;
     font-weight: 700;
     letter-spacing: -0.5px;
     line-height: 1.2;
   }
   .side-brand span {
     display: block;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 400;
     color: var(--muted);
     letter-spacing: 0;
@@ -756,7 +766,7 @@ main > *:nth-child(6) { animation-delay: .15s; }
 
   .side-date {
     margin-top: 20px;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted);
     padding-bottom: 22px;
     border-bottom: 1px solid var(--line);
@@ -768,22 +778,22 @@ main > *:nth-child(6) { animation-delay: .15s; }
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 14px;
+    padding: 13px 14px;
     border-radius: 12px;
-    font-size: 14.5px;
+    font-size: 15.5px;
     font-weight: 500;
     color: var(--ink2);
     text-align: left;
     transition: background .16s, color .16s;
   }
-  .snav .si { font-size: 18px; width: 22px; text-align: center; color: var(--muted); }
+  .snav .si { font-size: 19px; width: 22px; text-align: center; color: var(--muted); }
   .snav:hover { background: #F4F8F6; }
   .snav.on { background: var(--brand-l); color: var(--brand-d); font-weight: 600; }
   .snav.on .si { color: var(--brand); }
 
   .side-who {
     margin-top: auto;
-    font-size: 12.5px;
+    font-size: 13.5px;
     color: var(--muted);
     padding: 12px 14px;
     border-top: 1px solid var(--line);
@@ -816,8 +826,65 @@ main > *:nth-child(6) { animation-delay: .15s; }
   }
 
   /* 首页热量卡在宽屏下更舒展 */
-  main.tab-home > .hero { padding: 26px 26px 20px; }
-  main.tab-home .hero-big { font-size: 54px; }
+  main.tab-home > .hero { padding: 30px 30px 24px; }
+  main.tab-home .hero-big { font-size: 56px; }
+  main.tab-home .hero-label { font-size: 13.5px; }
+  main.tab-home .hero-sub { font-size: 13.5px; }
+  main.tab-home .hero-foot { font-size: 13px; }
+
+  /* 热量卡：环形进度条加粗、更醒目 */
+  main.tab-home .ring { width: 110px; height: 110px; }
+  main.tab-home .ring-bg { stroke-width: 11; }
+  main.tab-home .ring-fg { stroke-width: 11; }
+  main.tab-home .ring-txt { font-size: 20px; }
+  main.tab-home .ring-txt2 { font-size: 11px; }
+
+  /* 宏量营养素进度条：加粗、加高，标签更清楚 */
+  main.tab-home .mbar { gap: 11px; margin-bottom: 13px; }
+  main.tab-home .mbar .n { font-size: 14px; width: 36px; font-weight: 600; }
+  main.tab-home .mbar .t { height: 11px; }
+  main.tab-home .mbar .v { font-size: 13.5px; width: 90px; }
+
+  /* 点评与提示文字放大 */
+  .coach .txt { font-size: 15px; }
+  .coach .avatar { width: 40px; height: 40px; font-size: 17px; border-radius: 13px; }
+  .tip-t { font-size: 15px; }
+  .tip-b { font-size: 14px; }
+  .chip { font-size: 13px; padding: 7px 13px; }
+
+  /* 记录列表字号放大 */
+  .meal-hd .name { font-size: 15px; }
+  .meal-hd .time { font-size: 13px; }
+  .meal-hd .kcal { font-size: 15.5px; }
+  .meal-item { font-size: 14px; }
+  .meal-item .g, .meal-item .k { font-size: 13px; }
+  .day .d1 { font-size: 15px; }
+  .day .d2 { font-size: 13px; }
+  .day .d3 { font-size: 15.5px; }
+
+  /* 7 天趋势柱状图：更粗更清晰 */
+  .chart { height: 180px; gap: 10px; }
+  .chart .bar { border-radius: 9px 9px 4px 4px; }
+  .chart .lab { font-size: 12.5px; }
+  .chart .val { font-size: 11.5px; }
+
+  /* 表单控件字号放大 */
+  .seg button { font-size: 14.5px; }
+  .field label { font-size: 13px; }
+  .input { font-size: 16px; }
+  .btn { font-size: 16px; }
+  .food .fn { font-size: 15px; }
+  .food .fp { font-size: 13px; }
+  .food .fk { font-size: 13px; }
+  .sport .sn { font-size: 14.5px; }
+  .sport .sm { font-size: 12.5px; }
+  .durs button { font-size: 14px; }
+  .burn b { font-size: 34px; }
+  .burn span { font-size: 13.5px; }
+  .setting { font-size: 15px; }
+  .setting .v { font-size: 14px; }
+  .draft-name { font-size: 15px; }
+  .draft-meta { font-size: 13px; }
 
   /* 底部弹层在桌面上收成居中宽卡片 */
   .sheet {
